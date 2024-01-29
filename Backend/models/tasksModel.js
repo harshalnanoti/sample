@@ -1,34 +1,41 @@
 const mongoose = require("mongoose");
 
-const tasksSchema = mongoose.Schema({
+const tasksSchema = mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
     text: {
-        type: String,
-        required: [true, 'Please add a text field']
+      type: String,
+      required: [true, "Please add a text field"],
     },
     description: {
-        type: String,
-        default: ''
+      type: String,
+      default: "",
     },
     priority: {
-        type: String,
-        enum: ['low', 'medium', 'high'],
-        default: 'medium'
+      type: String,
+      enum: ["low", "medium", "high"],
+      default: "medium",
     },
     dueDate: {
-        type: Date,
-        default: null
+      type: Date,
+      default: null,
     },
     completed: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     assignedTo: {
-        type: String,
-        default: ''
-    }
-}, {
+      type: String,
+      default: "",
+    },
+  },
+  {
     timestamps: true,
-});
+  }
+);
 
-module.exports = mongoose.model('Task', tasksSchema);
-        
+module.exports = mongoose.model("Task", tasksSchema);

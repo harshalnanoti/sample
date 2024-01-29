@@ -1,12 +1,13 @@
 const asyncHandler = require("express-async-handler");
 
 const TasksModel = require("../models/tasksModel");
+const UserModel = require("../models/usersModel");
 
 // @desc Get task
 // @route POST /api/tasks
 // @access private
 const getTasks = asyncHandler(async (req, res) => {
-  const tasks = await TasksModel.find();
+  const tasks = await TasksModel.find({ user: req.user.id });
   res.status(200).json(tasks);
 });
 
@@ -18,15 +19,17 @@ const setTask = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("please add text field");
   }
-  const { text, description, priority, dueDate, completed, assignedTo } = req.body;
+  const { text, description, priority, dueDate, completed, assignedTo } =
+    req.body;
 
   const task = await TasksModel.create({
-    text ,
-    description:description || '',
-    priority:priority || 'medium',
-    dueDate:dueDate || null,
-    completed:completed || false,
-    assignedTo: assignedTo || '',
+    user: req.user.id,
+    text,
+    description: description || "",
+    priority: priority || "medium",
+    dueDate: dueDate || null,
+    completed: completed || false,
+    assignedTo: assignedTo || "",
   });
   res.status(200).json(task);
 });
@@ -39,6 +42,17 @@ const updateTasks = asyncHandler(async (req, res) => {
   if (!task) {
     res.status(404);
     throw new Error("Task not found");
+  }
+  const user = await UserModel.findById(req.user.id);
+  //check for user
+  if (!user) {
+    res.status(401);
+    throw new Error("User Not Found");
+  }
+  // make sure the logged in user matches the goal
+  if(task.user.toString()!== user.id){
+    res.status(401)
+    throw new Error("user not authorized")
   }
 
   const updatedTask = await TasksModel.findByIdAndUpdate(
@@ -62,9 +76,8 @@ const deleteTasks = asyncHandler(async (req, res) => {
   res.status(200).json(deletedtask);
 });
 
-
-//@desc get contact
-//@route GET /api/tasks/:id 
+//@desc get tasks
+//@route GET /api/tasks/:id
 //@access private
 const getTask = asyncHandler(async (req, res) => {
   const task = await TasksModel.findById(req.params.id);
@@ -72,7 +85,19 @@ const getTask = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Task not Found");
   }
-  res.status(200).json(task);
+  const user = await UserModel.findById(req.user.id);
+  //check for user
+  if (!user) {
+    res.status(401);
+    throw new Error("User Not Found");
+  }
+  // make sure the logged in user matches the goal
+  if(task.user.toString()!== user.id){
+    res.status(401)
+    throw new Error("user not authorized")
+  }
+
+  await task.remove()
 });
 
 module.exports = {
