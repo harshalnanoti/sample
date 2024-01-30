@@ -5,5 +5,4 @@
     "dueDate": "2024-02-01",
     "completed":false,
     "assignedTo":"Mr. Rahul Sharma"
-
 }
