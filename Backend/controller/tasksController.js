@@ -11,12 +11,17 @@ const getTasks = asyncHandler(async (req, res) => {
   res.status(200).json(tasks);
 });
 
+
+
+
+
+//////////////////////////////////////////////////////////
 // @desc Set tasks
 // @route SET /api/tasks
 // @access private
 const setTask = asyncHandler(async (req, res) => {
   if (!req.body.text) {
-    res.status(404);
+    res.status(400);
     throw new Error("please add text field");
   }
   const { text, description, priority, dueDate, completed, assignedTo } =
@@ -34,26 +39,23 @@ const setTask = asyncHandler(async (req, res) => {
   res.status(200).json(task);
 });
 
+
+
+
+////////////////////////////////////////////////////
 // @desc Update task
 // @route PUT /api/tasks/:id
 // @access private
 const updateTasks = asyncHandler(async (req, res) => {
   const task = await TasksModel.findById(req.params.id);
   if (!task) {
-    res.status(404);
-    throw new Error("Task not found");
+    res.status(404).json({ error: "Task not found" });
   }
-  const user = await UserModel.findById(req.user.id);
-  //check for user
-  if (!user) {
-    res.status(401);
-    throw new Error("User Not Found");
+
+  if (task.user.toString() !== req.user.id) {
+    res.status(403).json({ error: "User not authorized" });
   }
-  // make sure the logged in user matches the goal
-  if(task.user.toString()!== user.id){
-    res.status(401)
-    throw new Error("user not authorized")
-  }
+
 
   const updatedTask = await TasksModel.findByIdAndUpdate(
     req.params.id,
@@ -63,47 +65,71 @@ const updateTasks = asyncHandler(async (req, res) => {
   res.status(200).json(updatedTask);
 });
 
+
+
+
+
+/////////////////////////////////////////////////////////////////////
 // @desc Delete tasks
 // @route delete /api/tasks/:id
 // @access private
 const deleteTasks = asyncHandler(async (req, res) => {
   const deletedtask = await TasksModel.findById(req.params.id);
   if (!deletedtask) {
-    res.status(404);
-    throw new Error("Task not found");
+    res.status(404).json({ error: "Task not found" });
   }
-  await TasksModel.deleteOne({ _id: req.params.id });
-  res.status(200).json(deletedtask);
+
+  if (deletedtask.user.toString() !== req.user.id) {
+    res.status(403).json({ error: "User not authorized" });
+  }
+
+
+  // Make sure the logged in user matches the goal user
+  if (deletedtask.user.toString() !== req.user.id) {
+    res.status(401)
+    throw new Error('User not authorized')
+  }
+
+
+  await deletedtask.deleteOne()
+
+  res.status(200).json({ id: req.params.id })
 });
 
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////
 //@desc get tasks
 //@route GET /api/tasks/:id
 //@access private
-const getTask = asyncHandler(async (req, res) => {
-  const task = await TasksModel.findById(req.params.id);
-  if (!task) {
-    res.status(404);
-    throw new Error("Task not Found");
-  }
-  const user = await UserModel.findById(req.user.id);
-  //check for user
-  if (!user) {
-    res.status(401);
-    throw new Error("User Not Found");
-  }
-  // make sure the logged in user matches the goal
-  if(task.user.toString()!== user.id){
-    res.status(401)
-    throw new Error("user not authorized")
-  }
+// const getTask = asyncHandler(async (req, res) => {
+//   const task = await TasksModel.findById(req.params.id);
+//   if (!task) {
+//     res.status(404);
+//     throw new Error("Task not Found");
+//   }
+//   const user = await UserModel.findById(req.user.id);
+//   //check for user
+//   if (!user) {
+//     res.status(401);
+//     throw new Error("User Not Found");
+//   }
+//   // make sure the logged in user matches the goal
+//   if(task.user.toString()!== user.id){
+//     res.status(401)
+//     throw new Error("user not authorized")
+//   }
 
-  await task.remove()
-});
+//   await task.remove()
+// });
 
 module.exports = {
   getTasks,
   setTask,
   updateTasks,
   deleteTasks,
-  getTask,
+  // getTask,
 };

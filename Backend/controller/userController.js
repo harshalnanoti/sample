@@ -70,17 +70,17 @@ const loginUser = asyncHandler(async (req, res) => {
 //@route  GET /api/users/current
 //@access private
 const currentUser = asyncHandler(async (req, res) => {
-    const {_id,name,email} = await userModel.findById(req.user.id)
-
-
-    res.status(200).json({
-        id:_id,
-        name,
-        email
-    })
+    res.status(200).json(req.user)
 
 });
 
+const getUsersNames = asyncHandler(async (req, res) => {
+  // Fetch all users' names except the currently logged-in user
+  const users = await userModel.find({ _id: { $ne: req.user.id } }, 'name');
+  res.status(200).json(users);
+});
+
+ 
 
 
 // generate JWT 
@@ -94,4 +94,5 @@ module.exports = {
   registerUser,
   loginUser,
   currentUser,
+  getUsersNames
 };
