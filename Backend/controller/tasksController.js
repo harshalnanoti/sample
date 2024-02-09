@@ -47,21 +47,20 @@ const setTask = asyncHandler(async (req, res) => {
 // @route PUT /api/tasks/:id
 // @access private
 const updateTasks = asyncHandler(async (req, res) => {
-  const task = await TasksModel.findById(req.params.id);
-  if (!task) {
-    res.status(404).json({ error: "Task not found" });
-  }
+  const taskId = req.params.id;
+  const userId = req.user.id;
 
-  if (task.user.toString() !== req.user.id) {
-    res.status(403).json({ error: "User not authorized" });
-  }
-
-
-  const updatedTask = await TasksModel.findByIdAndUpdate(
-    req.params.id,
+  const updatedTask = await TasksModel.findOneAndUpdate(
+    { _id: taskId, user: userId },
     req.body,
     { new: true }
   );
+
+  if (!updatedTask) {
+    res.status(404).json({ error: "Task not found or user not authorized" });
+    return;
+  }
+
   res.status(200).json(updatedTask);
 });
 
@@ -97,39 +96,38 @@ const deleteTasks = asyncHandler(async (req, res) => {
 });
 
 
-
-
-
-
 //////////////////////////////////////////////////////////////////////
 //@desc get tasks
 //@route GET /api/tasks/:id
 //@access private
-// const getTask = asyncHandler(async (req, res) => {
-//   const task = await TasksModel.findById(req.params.id);
-//   if (!task) {
-//     res.status(404);
-//     throw new Error("Task not Found");
-//   }
-//   const user = await UserModel.findById(req.user.id);
-//   //check for user
-//   if (!user) {
-//     res.status(401);
-//     throw new Error("User Not Found");
-//   }
-//   // make sure the logged in user matches the goal
-//   if(task.user.toString()!== user.id){
-//     res.status(401)
-//     throw new Error("user not authorized")
-//   }
+const getTask = asyncHandler(async (req, res) => {
+  const task = await TasksModel.findById(req.params.id);
+  if (!task) {
+    res.status(404);
+    throw new Error("Task not Found");
+  }
+  const user = await UserModel.findById(req.user.id);
+  //check for user
+  if (!user) {
+    res.status(401);
+    throw new Error("User Not Found");
+  }
+  // make sure the logged in user matches the goal
+  if(task.user.toString()!== user.id){
+    res.status(401)
+    throw new Error("user not authorized")
+  }
 
-//   await task.remove()
-// });
+  // Send the task data in the response
+  res.status(200).json(task);
+});
+
+
 
 module.exports = {
   getTasks,
   setTask,
   updateTasks,
   deleteTasks,
-  // getTask,
+  getTask,
 };

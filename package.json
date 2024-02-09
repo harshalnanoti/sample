@@ -7,7 +7,8 @@
     "start": "node Backend/server.js",
     "server": "nodemon Backend/server.js",
     "client": "npm start --prefix frontend",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "test": "jest"
   },
   "author": "Harshal Nanoti",
   "license": "MIT",
@@ -24,7 +25,9 @@
     "mongoose": "^8.1.1"
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.23.3",
     "concurrently": "^8.2.2",
+    "jest": "^29.7.0",
     "nodemon": "^3.0.3"
   }
 }

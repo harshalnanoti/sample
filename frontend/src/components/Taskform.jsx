@@ -1,20 +1,17 @@
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { createTask } from "../features/task/taskSlice";
 import authService from "../features/auth/authService";
 
-
-const Taskform = () => {
+const TaskForm = () => {
+  const dispatch = useDispatch();
   const [text, setText] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("medium");
   const [dueDate, setDueDate] = useState("");
   const [completed, setCompleted] = useState(false);
   const [assignedTo, setAssignedTo] = useState("");
-
-  const dispatch = useDispatch();
   const [users, setUsers] = useState([]);
-
 
   useEffect(() => {
     const fetchUsersNames = async () => {
@@ -24,7 +21,6 @@ const Taskform = () => {
         setUsers(usersNames);
       } catch (error) {
         console.error('Error fetching user names:', error.message);
-            // Handle errors as needed
       }
     };
 
@@ -136,4 +132,4 @@ const Taskform = () => {
   );
 };
 
-export default Taskform;
+export default TaskForm;

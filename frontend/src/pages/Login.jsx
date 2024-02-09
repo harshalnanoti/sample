@@ -62,7 +62,7 @@ function Login() {
         <h1>
           <FaSignInAlt /> Login
         </h1>
-        <p>Please login for create a task</p>
+        {/* <p>Please login for create a task</p> */}
       </section>
       <section className="form">
         <form onSubmit={onSubmit}>

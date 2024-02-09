@@ -19,13 +19,23 @@ app.use("/api/tasks", require("./routes/tasksRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 
 
-// server frontend
-if(process.env.NODE_ENV === "production"){
-    app.use(express.static(path.join(__dirname,"../frontend/build")))
-    app.get("*", (req,res)=> res.sendFile(path.resolve(__dirname,"../","frontend","build","index.html")))
-}else{
-    app.get('/',(req,res)=>res.send("please set to a production"))
-}
+// Serve Static Files for Frontend
+if (process.env.NODE_ENV === "production") {
+    // Adjust the static files path based on your project structure
+    const staticFilesPath = path.join(__dirname, "../frontend/dist");
+  
+    // Serve static files
+    app.use(express.static(staticFilesPath));
+  
+    // Handle other routes by serving the index.html file
+    app.get("*", (req, res) =>
+      res.sendFile(path.resolve(staticFilesPath, "index.html"))
+    );
+  } else {
+    app.get("/", (req, res) => res.send("Please set to production"));
+  }
+  
+  
 
 
 

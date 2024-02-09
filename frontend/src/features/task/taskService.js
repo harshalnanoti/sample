@@ -15,24 +15,51 @@ const createTask = async (taskData, token) => {
   return response.data;
 };
 
-
-
 // get task
-const getTasks = async ( token) => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  
-    const response = await axios.get(API_URL, config);
-  
-    return response.data;
+const getTasks = async (token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   };
+
+  const response = await axios.get(API_URL, config);
+
+  return response.data;
+};
+
+const getTaskById = async (taskId, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.get(API_URL + taskId, config);
+
+  return response.data;
+};
+
+// update task
+const updateTask = async (taskId, updatedTaskData, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.put(
+    `${API_URL}${taskId}`,
+    updatedTaskData,
+    config
+  );
+
+  return response.data;
+};
 
 //delete
 
-const deleteTask = async (taskId,token) => {
+const deleteTask = async (taskId, token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -47,7 +74,9 @@ const deleteTask = async (taskId,token) => {
 const taskService = {
   createTask,
   getTasks,
-  deleteTask
+  deleteTask,
+  updateTask,
+  getTaskById,
 };
 
 export default taskService;
