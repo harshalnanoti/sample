@@ -7,10 +7,15 @@ const UserModel = require("../models/usersModel");
 // @route POST /api/tasks
 // @access private
 const getTasks = asyncHandler(async (req, res) => {
-  const tasks = await TasksModel.find({ user: req.user.id });
+  const userId = req.user.id;
+
+  // Fetch tasks where either the task is assigned to the user or created by the user
+  const tasks = await TasksModel.find({
+    $or: [{ user: userId }, { assignedTo: userId }],
+  });
+
   res.status(200).json(tasks);
 });
-
 
 
 
@@ -50,16 +55,27 @@ const updateTasks = asyncHandler(async (req, res) => {
   const taskId = req.params.id;
   const userId = req.user.id;
 
-  const updatedTask = await TasksModel.findOneAndUpdate(
-    { _id: taskId, user: userId },
-    req.body,
-    { new: true }
-  );
+  // Check if the task exists and is either assigned to the user or created by the user
+  const task = await TasksModel.findOne({ _id: taskId, $or: [{ user: userId }, { assignedTo: userId }] });
 
-  if (!updatedTask) {
+  if (!task) {
     res.status(404).json({ error: "Task not found or user not authorized" });
     return;
   }
+
+  // Check if the assigned user is updating the completed field
+  if (task.assignedTo && task.assignedTo.toString() === userId && req.body.completed !== undefined) {
+    task.completed = req.body.completed;
+  }
+
+  // Update other fields if needed
+  task.text = req.body.text || task.text;
+  task.description = req.body.description || task.description;
+  task.priority = req.body.priority || task.priority;
+  task.dueDate = req.body.dueDate || task.dueDate;
+  task.assignedTo = req.body.assignedTo || task.assignedTo;
+
+  const updatedTask = await task.save();
 
   res.status(200).json(updatedTask);
 });
@@ -96,6 +112,10 @@ const deleteTasks = asyncHandler(async (req, res) => {
 });
 
 
+
+
+
+
 //////////////////////////////////////////////////////////////////////
 //@desc get tasks
 //@route GET /api/tasks/:id
@@ -121,8 +141,6 @@ const getTask = asyncHandler(async (req, res) => {
   // Send the task data in the response
   res.status(200).json(task);
 });
-
-
 
 module.exports = {
   getTasks,
