@@ -117,30 +117,36 @@ const deleteTasks = asyncHandler(async (req, res) => {
 
 
 //////////////////////////////////////////////////////////////////////
-//@desc get tasks
-//@route GET /api/tasks/:id
-//@access private
-const getTask = asyncHandler(async (req, res) => {
-  const task = await TasksModel.findById(req.params.id);
-  if (!task) {
-    res.status(404);
-    throw new Error("Task not Found");
-  }
-  const user = await UserModel.findById(req.user.id);
-  //check for user
-  if (!user) {
-    res.status(401);
-    throw new Error("User Not Found");
-  }
-  // make sure the logged in user matches the goal
-  if(task.user.toString()!== user.id){
-    res.status(401)
-    throw new Error("user not authorized")
-  }
-
-  // Send the task data in the response
-  res.status(200).json(task);
-});
+  //@desc get tasks
+  //@route GET /api/tasks/:id
+  //@access private
+  const getTask = asyncHandler(async (req, res) => {
+    const task = await TasksModel.findById(req.params.id);
+  
+    if (!task) {
+      res.status(404);
+      throw new Error("Task not Found");
+    }
+  
+    const user = await UserModel.findById(req.user.id);
+  
+    if (!user) {
+      res.status(401);
+      throw new Error("User Not Found");
+    }
+  
+    // Check if the logged-in user is the task owner or assigned to the task
+    if (
+      task.user.toString() !== user.id &&
+      (!task.assignedTo || (Array.isArray(task.assignedTo) && task.assignedTo.includes(user.id)))
+    ) {
+      res.status(401);
+      throw new Error("User not authorized");
+    }
+  
+    // Send the task data in the response
+    res.status(200).json(task);
+  });
 
 module.exports = {
   getTasks,

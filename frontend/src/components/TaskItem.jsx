@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit, faCheck } from "@fortawesome/free-solid-svg-icons";
 import authService from "../features/auth/authService";
-import { updateTask } from "../features/task/taskSlice";
+import { deleteTask, updateTask } from "../features/task/taskSlice";
 import { Link, useNavigate } from "react-router-dom";
 
 

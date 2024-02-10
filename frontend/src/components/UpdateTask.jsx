@@ -133,8 +133,7 @@ const UpdateTask = () => {
               name="completed"
               checked={updatedTaskData.completed}
               onChange={handleInputChange}
-              style={{ transform: "scale(1.5)" }}
-              disabled
+              style={{ transform: "scale(1.5)" }}   
             />
           </div>
           <div className="form-group">
