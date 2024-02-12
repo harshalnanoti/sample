@@ -50,8 +50,13 @@ const AssignedTask = ({ task , isAssignedByUser }) => {
     setIsEditing(false);
   };
 
+  const taskStyles = {
+    backgroundColor: task.completed ? "#DFF0D8" : "#fc798cfb",
+    // Add more styles as needed
+  };
+  
   return (
-    <div className="task">
+    <div className="task" style={taskStyles}>
       <div className="task-info">
         {isEditing ? (
           <div className="task-edit-form">

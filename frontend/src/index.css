@@ -212,6 +212,42 @@ h3 {
   animation: spin 1.2s linear infinite;
 }
 
+
+.dashboard-container {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.dashboard-header {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.dashboard-header h1 {
+  margin-bottom: 10px;
+  color: #fc798cfb;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dashboard-tasks {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.assigned-tasks,
+.created-tasks {
+  width: 48%;
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
