@@ -18,7 +18,6 @@ function Dashboard() {
   const [createdTasks, setCreatedTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useSelector((state) => state.auth);
-  const [radioData, setRadioData] = useState("");
   const { tasks, isLoading: tasksLoading, isError, message } = useSelector(
     (state) => state.tasks
   );

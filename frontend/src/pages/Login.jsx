@@ -58,9 +58,9 @@ function Login() {
 
   return (
     <>
-      <section className="heading">
+      <section className="heading items-center">
         <h1>
-          <FaSignInAlt /> Login
+          Login
         </h1>
         {/* <p>Please login for create a task</p> */}
       </section>

@@ -23,7 +23,17 @@ const getUser = async () => {
 
     return response.data;
   } catch (error) {
-    throw error; // Handle errors in a more specific way if needed
+    // Handle the case when the token has expired
+    if (error.response && error.response.status === 401) {
+      console.log("Token expired. Logging out user.");
+      // Perform any necessary actions to clear user-related data
+      // For example, redirect to the login page or dispatch a logout action
+      // You may also want to remove the user data from localStorage
+      localStorage.removeItem("user");
+      // Redirect to the login page or dispatch a logout action if needed
+      window.location.href = "/login";
+    }
+    throw error; // Handle other errors in a more specific way if needed
   }
 };
 

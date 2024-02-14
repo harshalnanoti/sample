@@ -17,9 +17,6 @@ const getTasks = asyncHandler(async (req, res) => {
   res.status(200).json(tasks);
 });
 
-
-
-
 //////////////////////////////////////////////////////////
 // @desc Set tasks
 // @route SET /api/tasks
@@ -43,9 +40,6 @@ const setTask = asyncHandler(async (req, res) => {
   });
   res.status(200).json(task);
 });
-
-
-
 
 ////////////////////////////////////////////////////
 // @desc Update task
@@ -80,10 +74,6 @@ const updateTasks = asyncHandler(async (req, res) => {
   res.status(200).json(updatedTask);
 });
 
-
-
-
-
 /////////////////////////////////////////////////////////////////////
 // @desc Delete tasks
 // @route delete /api/tasks/:id
@@ -94,27 +84,16 @@ const deleteTasks = asyncHandler(async (req, res) => {
     res.status(404).json({ error: "Task not found" });
   }
 
-  if (deletedtask.user.toString() !== req.user.id) {
+   // Check if the user is authorized to delete the task
+   if (deletedtask.user.toString() !== req.user.id && deletedtask.assignedTo.toString() !== req.user.id) {
     res.status(403).json({ error: "User not authorized" });
+    return;
   }
-
-
-  // Make sure the logged in user matches the goal user
-  if (deletedtask.user.toString() !== req.user.id) {
-    res.status(401)
-    throw new Error('User not authorized')
-  }
-
 
   await deletedtask.deleteOne()
 
   res.status(200).json({ id: req.params.id })
 });
-
-
-
-
-
 
 //////////////////////////////////////////////////////////////////////
   //@desc get tasks
