@@ -4,7 +4,7 @@ const {registerUser,loginUser,currentUser,getUsersNames,updateUserProfile} = req
 const {protect} = require('../middleware/authMiddleware')
 
 router.post('/',registerUser)
-router.put("/updateUserData", protect, updateUserProfile);
+router.put("/updateUserData/:userId", protect, updateUserProfile);
 router.post('/login',loginUser)
 router.get('/getUsersNames',protect,getUsersNames)
 router.get('/current',protect,currentUser)

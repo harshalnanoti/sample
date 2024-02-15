@@ -8,6 +8,7 @@ import Spinner from "../components/Spinner";
 import TaskItem from "../components/TaskItem";
 import TaskForm from "../components/TaskForm";
 import AssignedTask from "../components/AssignedTask";
+import UpdateUserinfo from "./UpdateUserinfo"; // Import the UpdateUserDetail component
 
 // import "../styles/dashboard.css"; 
 // Assuming you have a separate CSS file for the dashboard styles
@@ -17,6 +18,7 @@ function Dashboard() {
   const [assignedTasks, setAssignedTasks] = useState([]);
   const [createdTasks, setCreatedTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showUpdateUserDetail, setShowUpdateUserDetail] = useState(false); // State to control the visibility of UpdateUserDetail
   const { user } = useSelector((state) => state.auth);
   const { tasks, isLoading: tasksLoading, isError, message } = useSelector(
     (state) => state.tasks
@@ -55,6 +57,11 @@ function Dashboard() {
       setCreatedTasks(created);
     }
   }, [tasks, user]);
+
+  const handleUpdateUserDetailClick = () => {
+    setShowUpdateUserDetail(true);
+  };
+
   return (
     <div className="dashboard-container">
       {user ? (
@@ -91,9 +98,14 @@ function Dashboard() {
               </div>
             </div>
           </section>
+          {/* Button to show UpdateUserDetail */}
+          <button className="heading items-center" onClick={handleUpdateUserDetailClick}>Update User Details</button>
+
+          {/* Conditionally render UpdateUserDetail */}
+          {showUpdateUserDetail && <UpdateUserinfo />}
         </>
       ) : (
-        <p>Please log in to view the dashboard.</p>
+       <p>please login again</p>
       )}
     </div>
   );
