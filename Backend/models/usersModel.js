@@ -17,6 +17,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add a password"],
     },
+    reset_key: {
+      type: String,
+      allowNull: true,
+  },
   },
   {
     timestamps: true,

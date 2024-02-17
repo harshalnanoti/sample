@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css';
 import UpdateTask from "./components/UpdateTask"
 import ForgotPassword from "./pages/Forgetpassword"
+import PasswordResetForm from "./pages/RechangePassword"
 
 
 
@@ -24,6 +25,7 @@ function App() {
               <Route path="/register" element={<Register/>}/>
               <Route path="/forgetpassword" element={<ForgotPassword/>}/>
               <Route path="/update/:taskId" element={<UpdateTask />} />
+              <Route path="/rechange-password/:token" element={<PasswordResetForm/>} />
             </Routes>
         </div>
     </Router>

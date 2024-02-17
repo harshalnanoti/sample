@@ -1,57 +1,61 @@
-// components/ForgotPassword.js
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-// import { postForgotPassword } from '../api/userApi'; // Adjust based on your API structure
+import axios from "axios";
+import { toast } from "react-toastify";
 
-const ForgotPassword = () => {
-  const [email, setEmail] = useState(""); // Add email state
+const ResetLinkForm = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  
+  const [email, setEmail] = useState("");
+
   const onChange = (e) => {
     setEmail(e.target.value);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (!email) {
+      toast.error("Please enter your email address");
+      return;
+    }
     try {
-      // Call the API to handle the forgot password logic
-      const response = await postForgotPassword({ password });
-
-      // Dispatch actions or update state based on the API response
-      dispatch(someAction(response));
-
-      // Navigate to a different route if needed
-      navigate("/reset-success");
+      const response = await axios.post(
+        "http://localhost:5000/api/users/reset-link",
+        { email }
+      );
+      console.log(response.data);
+      if (response.data.error) {
+        toast.error(response.data.error);
+      } else {
+        toast.success(response.data.success_msg);
+        navigate("/login");
+      }
     } catch (error) {
-      // Handle errors, update state, or show error messages
-      console.error(error);
+      console.error("An error occurred on the client:", error);
+      if (error.response && error.response.data && error.response.data.error) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("Unexpected error occurred");
+      }
     }
   };
 
   return (
-    <div>
-      <h2>Forgot Password</h2>
-      <form onSubmit={handleSubmit}>
-        <section className="form">
-          <div className="form-group">
-            <input
-              type="email"
-              className="form-control"
-              id="email"
-              name="email"
-              value={email}
-              placeholder="Enter your register email"
-              onChange={onChange}
-            />
-          </div>
-        </section>
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <section className="form">
+        <div className="form-group">
+          <input
+            type="email"
+            className="form-control"
+            id="email"
+            name="email"
+            value={email}
+            placeholder="Enter your register email"
+            onChange={onChange}
+          />
+        </div>
+      </section>
+      <button type="submit">Send Reset Link</button>
+    </form>
   );
 };
 
-export default ForgotPassword;
+export default ResetLinkForm;
