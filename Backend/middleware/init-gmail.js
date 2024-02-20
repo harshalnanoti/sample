@@ -5,12 +5,12 @@ const logger = require("../middleware/winston");
 
 // Create a reusable transporter object using the default SMTP transport
 const transporter = nodemailer.createTransport({
-  host: "smtp.office365.com",
+  host: "smtpoffice365",
   port: 587,
   secure: false, // true for 465, false for other ports
   auth: {
-    user: "no-reply@dinshaws.co.in", // SMTP user for authentication
-    pass: "Smtpmailonly@12", // SMTP password for authentication
+    user: "create a smtp user mail id for authentication", // SMTP user for authentication
+    pass: "Smtp password for authentication", // SMTP password for authentication
   },
 });
 
@@ -18,8 +18,8 @@ const transporter = nodemailer.createTransport({
 async function sendEmails(mailOptions) {
   // Check if mailOptions has all the required properties, if not replace with default options
   const defaultOptions = {
-    from: "task manager <no-reply@dinshaws.co.in>",
-    to: "no-reply@dinshaws.co.in",
+    from: "task manager no reply mail create",
+    to: "task manager no reply mail create",
     cc: "",
     bcc: "",
     subject: "Email from Task Manager website ",
